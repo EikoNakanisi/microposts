@@ -15,6 +15,10 @@ class User < ApplicationRecord
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
 
+# 多対多 自分がお気に入りにしている microposts達取得
+  has_many :favorites
+  has_many :comments, through: :favorites, source: :micropost
+
 # フォロー／アンフォロー／既フォロー調査
   def follow(other_user)
     unless self == other_user
@@ -29,6 +33,20 @@ class User < ApplicationRecord
 
   def following?(other_user)
     self.followings.include?(other_user)
+  end
+
+# お気に入り加入／お気に入り削除／既お気に入り調査
+  def favcom(micropost)
+      self.favorites.find_or_create_by(micropost_id: micropost.id)
+  end
+
+  def unfavcom(micropost)
+    favorite = self.favorites.find_by(micropost_id: micropost.id)
+    favorite.destroy if favorite
+  end
+
+  def favcoming?(micropost)
+    self.comments.include?(micropost)
   end
 
   def feed_microposts

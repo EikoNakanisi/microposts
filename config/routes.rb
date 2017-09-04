@@ -11,10 +11,16 @@ Rails.application.routes.draw do
       get :followings
       get :followers
     end
+#中間テーブルから先にある、一覧表示するページのルーティング
+    member do
+      get :favorites
+    end
 
   end
 
   resources :microposts, only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]
+  resources :favorites, only: [:create, :destroy]
+
 end
 
