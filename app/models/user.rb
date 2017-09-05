@@ -49,7 +49,14 @@ class User < ApplicationRecord
     self.comments.include?(micropost)
   end
 
+#タイムライン用のマイクロポストを取得するためのメソッド
   def feed_microposts
     Micropost.where(user_id: self.following_ids + [self.id])
   end
+  
+#お気に入り一覧用マイクロポストを取得するためのメソッド
+  def feed_favorites
+    Favorite.where(micropost_id: self.comments_ids)
+  end
+
 end
